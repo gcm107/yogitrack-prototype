@@ -42,12 +42,16 @@ Basic Flow:
 4. YogiTrack sends a confirmation message to both the manager and the instructor, indicating that a new class has been successfully scheduled
 
 **Requirements Implemented:**
-
+- 
+- Manager can add a new class.
+- Assigns instructor, payrate, and class description (if class is not general) to new class.
+- Checks ensure there is not a schedule conflict. 
+- Confirmation message is displayed. 
 
 
 
 ___
-_**Status:**_ Next to implement
+_**Status:**_ Working
 
 ---
 

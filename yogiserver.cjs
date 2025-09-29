@@ -7,6 +7,8 @@ app.use(express.json());
 
 app.use("/api/instructor", require("./routes/instructorRoutes.cjs"));
 
+// routes for yoga class operations
+app.use("/api/class", require("./routes/classRoutes.cjs"));
 
 
 // Start the web server
