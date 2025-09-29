@@ -139,7 +139,7 @@ async function initClassDropdown() {
     const classes = await response.json();
 
     // clear existing options
-    select.innerHTML = '<option value=""> -- Select Class ID --</option>';
+    select.innerHTML = '<option value="">-- Choose a class to view --</option>';
 
     classes.forEach((classItem) => {
       const option = document.createElement("option");
@@ -161,7 +161,7 @@ async function initInstructorDropdown() {
     const instructors = await response.json();
 
     // clear existing options
-    select.innerHTML = '<option value=""> -- Select Instructor --</option>';
+    select.innerHTML = '<option value="">-- Choose an instructor --</option>';
 
     instructors.forEach((instructor) => {
       const option = document.createElement("option");
@@ -262,7 +262,7 @@ async function checkScheduleConflict(day, time, duration) {
 // clear the class form
 function clearClassForm() {
   document.getElementById("classForm").reset();
-  document.getElementById("classIdSelect").innerHTML = '<option value=""> -- Select Class ID --</option>';
+  document.getElementById("classIdSelect").innerHTML = '<option value="">-- Choose a class to view --</option>';
 }
 
 // set form for search mode

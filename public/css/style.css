@@ -22,6 +22,7 @@ a { text-decoration: none; }
   box-shadow: 0 4px 14px rgba(0,0,0,.06); width: 100%; max-width: 480px;
 }
 .card--wide { max-width: 560px; }
+.card--class { max-width: 600px; padding: 2.5rem; }
 
 /* ---------- Sidebar ---------- */
 .sidebar {
@@ -48,6 +49,11 @@ legend { padding: 0 .25rem; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
+/* ---------- added more spacing for adding class form ---------- */
+.card--class .grid-2 { gap: 1.5rem; }
+.card--class fieldset { margin: 1.5rem 0; }
+.card--class label { margin-bottom: 1rem; }
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-block; padding: .6rem 1.25rem; border-radius: .5rem;
@@ -60,6 +66,21 @@ legend { padding: 0 .25rem; }
 .btn--danger:hover { background: #992a20; }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-top: 1.5rem; }
+
+/* ---------- make some small changes to form headers and padding ---------- */
+.form-header {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.top-actions {
+  display: flex;
+  gap: 0.5rem;
+}
 
 /* ---------- Background image for dashboard ---------- */
 /* ---------- Full-page background with faint overlay ---------- */

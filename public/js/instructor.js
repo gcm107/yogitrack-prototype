@@ -185,7 +185,7 @@ async function addInstructorDropdownListener() {
 
 function clearInstructorForm() {
   document.getElementById("instructorForm").reset(); // Clears all inputs including text, textarea, and unchecks radio buttons
-  document.getElementById("instructorIdSelect").innerHTML = "";
+  document.getElementById("instructorIdSelect").innerHTML = '<option value="">-- Choose an instructor to view --</option>';
 }
 
 function setFormForSearch() {
