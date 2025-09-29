@@ -1,0 +1,29 @@
+{
+  "name": "yogitrack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node yogiserver.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcm107/yogitrack-prototype.git"
+  },
+  "author": "Cale McDowell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gcm107/yogitrack-prototype/issues"
+  },
+  "homepage": "https://github.com/gcm107/yogitrack-prototype#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.4",
+    "express": "^5.1.0",
+    "heroku": "^8.7.1",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.18.2",
+    "mongoose-int32": "^0.6.0",
+    "mongosh": "^2.5.8"
+  }
+}

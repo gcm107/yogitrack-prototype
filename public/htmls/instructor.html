@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script type='text/javascript' src='https://cdn.inst-fs-iad-prod.inscloudgate.net/VXe-uOxqOYo78hkOSh-RIbUdbDzneT0kJgjsPQ8EWC-JgGKGTYhJTzLq1ZXJqalCqaG_2YkoZdCrRgbUWqiWPyZ4sE9R8QsncTAKbPRtc379TE30I9-TzRXJ7QoDz6dwontOoQloZjehC_EGhoTOv2g5EwXD9OE8YF6-ZFLkCbA='></script>
+  <meta charset="UTF-8">
+  <title>YogiTrack • Instructors</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="layout--sidebar">
+  <!-- Re-use the same sidebar -->
+  <aside class="sidebar">
+    <a class="logo-wrap" href="dashboard.html">
+      <img src="../images/Logo.png" alt="YogaTrack Logo" class="logo">
+    </a>
+    <nav class="nav">
+         <a href="instructor.html">Instructors</a>
+        <a href="#">Packages</a>
+        <a href="#">Class Schedule</a>
+        <a href="#">Customers</a>
+        <a href="#">Check-ins</a>
+        <a href="../index.html">Log Out</a>
+    </nav>
+  </aside>
+
+  <!-- Instructor form -->
+  <main class="layout--center">
+    <form class="card" id="instructorForm" >
+      <h2>Instructor Details</h2>
+
+      <!-- Instructor Id-->
+      <label id = "instructorIdLabel" for="instructorID">Instructor ID
+        <select name="instructorId" id="instructorIdSelect" class="form-input" required>
+          <option value=""> -- Select Instructor Id --</option>
+          <!-- Options will be populated by JavaScript-->
+        </select>
+      </label>
+
+      <label id="instructorIdTextLabel" style="display: none;">Instructor ID
+        <input id="instructorIdText" type="text" readonly/>
+      </label>
+
+      <!-- hiding field for form submission -->
+      <input type="hidden" id="instructorIdHidden" name="instructorId" readonly />
+
+      <!-- changed names to camelCase -->
+      <div class="grid-2">
+        <label>First&nbsp;Name
+          <input type="text" name="firstName">
+        </label>
+        <label>Last&nbsp;Name
+          <input type="text" name="lastName">
+        </label>
+      </div>
+
+      <label>Address
+        <textarea name="address" rows="2"></textarea>
+      </label>
+
+      <div class="grid-2">
+        <label>Phone
+          <input type="tel" name="phone">
+        </label>
+        <label>Email
+          <input type="email" name="email">
+        </label>
+      </div>
+
+      <fieldset>
+        <legend>Preferred Contact</legend>
+        <div class="radio-row">
+          <label><input type="radio" name="pref" value="phone">Phone</label>
+          <label><input type="radio" name="pref" value="email">Email</label>
+        </div>
+      </fieldset>
+
+      <!-- Action buttons -->
+      <div class="btn-row">
+        <button type="button" class="btn" id="searchBtn">Search</button>
+        <button type="button" class="btn btn--primary" id="addBtn">Add&nbsp;New</button>
+        <button type="button" class="btn" id="saveBtn">Save</button>
+        <button type="button" class="btn btn--danger" id="deleteBtn">Delete</button>
+        <button type="button" class="btn" onclick="clearInstructorForm()">Clear</button>
+        <a href="dashboard.html" class="btn">Exit</a>
+      </div>
+    </form>
+  </main>
+
+<script src="../js/instructor.js"></script>
+</body>
+</html>
