@@ -1,6 +1,8 @@
 # YOGITRACK PROTOTYPE
 
-Simple yoga studio management app
+Simple yoga studio management app 
+
+- Currently working on adding all use cases. Most are finished but still need to commit after testing. 
 
 ## PART 1: CORE FUNCTIONALITY
 
