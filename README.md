@@ -55,8 +55,8 @@ _**Status:**_ Working
 
 ## PART 2: USE CASES
 
-- Customer management
-- Package management
+- Customer management - implemented (add customer)
+- Package management 
 - Attendance tracking
 - Payment processing
 - Report Generation
