@@ -1,14 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
-import { Link } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  FormLabel,
+  Grid,
+  Alert,
+  Snackbar,
+} from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ClearIcon from '@mui/icons-material/Clear';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 
-// new instructor page using react
 function Instructor() {
   const [formMode, setFormMode] = useState('search');
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
-  
-  // form state
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  // form fields
   const [formData, setFormData] = useState({
     instructorId: '',
     firstName: '',
@@ -16,29 +38,26 @@ function Instructor() {
     email: '',
     phone: '',
     address: '',
-    preferredContact: 'phone'
+    preferredContact: 'phone',
   });
 
-  // load instructor dropdown
+  // load instructors when page loads
   useEffect(() => {
     if (formMode === 'search') {
       loadInstructorDropdown();
     }
   }, [formMode]);
 
-  // fetch  instructors for dropdown
   const loadInstructorDropdown = async () => {
     try {
       const response = await fetch('/api/instructor/getInstructorIds');
       const data = await response.json();
       setInstructors(data);
     } catch (err) {
-      console.error('Failed to load instructors:', err);
-      alert('Error loading instructors: ' + err.message);
+      showSnackbar('Error loading instructors', 'error');
     }
   };
 
-  // handle instructor select from dropdown
   const handleInstructorSelect = async (e) => {
     const instructorId = e.target.value;
     if (!instructorId) {
@@ -53,7 +72,7 @@ function Instructor() {
 
       const data = await response.json();
       if (!data || Object.keys(data).length === 0) {
-        alert('No instructor found');
+        showSnackbar('No instructor found', 'warning');
         return;
       }
 
@@ -65,44 +84,32 @@ function Instructor() {
         email: data.email || '',
         phone: data.phone || '',
         address: data.address || '',
-        preferredContact: data.preferredContact || 'phone'
+        preferredContact: data.preferredContact || 'phone',
       });
     } catch (err) {
-      alert(`Error searching instructor: ${instructorId} - ${err.message}`);
+      showSnackbar(`Error searching instructor: ${err.message}`, 'error');
     }
   };
 
-  // handling form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  // handling radio button change
-  const handleRadioChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      preferredContact: e.target.value
-    }));
-  };
-
-  // switch to search mode
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadInstructorDropdown();
   };
 
-  // switch to add mode
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
-  // clear the form
   const clearForm = () => {
     setFormData({
       instructorId: '',
@@ -111,31 +118,32 @@ function Instructor() {
       email: '',
       phone: '',
       address: '',
-      preferredContact: 'phone'
+      preferredContact: 'phone',
     });
     setSelectedInstructor(null);
   };
 
-  //  save instructor
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
-        // validation - check required fields
         if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
-          alert('Please fill in all required fields: First Name, Last Name, Email, Phone');
+          showSnackbar('Please fill in all required fields', 'warning');
           return;
         }
 
-        // check if instructor name already exists
-        const checkRes = await fetch(`/api/instructor/search?firstName=${formData.firstName}&lastName=${formData.lastName}`);
+        const checkRes = await fetch(
+          `/api/instructor/search?firstName=${formData.firstName}&lastName=${formData.lastName}`
+        );
         if (checkRes.ok) {
           const existingData = await checkRes.json();
-          if (existingData && !window.confirm(`Instructor "${formData.firstName} ${formData.lastName}" may already exist. Continue anyway?`)) {
+          if (
+            existingData &&
+            !window.confirm(`Instructor "${formData.firstName} ${formData.lastName}" may already exist. Continue anyway?`)
+          ) {
             return;
           }
         }
 
-        // get the next instructor ID
         const idRes = await fetch('/api/instructor/getNextId');
         const { nextId } = await idRes.json();
 
@@ -146,15 +154,13 @@ function Instructor() {
           address: formData.address.trim(),
           phone: formData.phone.trim(),
           email: formData.email.trim(),
-          preferredContact: formData.preferredContact
+          preferredContact: formData.preferredContact,
         };
-
-        console.log('Instructor data:', instructorData);
 
         const addRes = await fetch('/api/instructor/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(instructorData)
+          body: JSON.stringify(instructorData),
         });
 
         const result = await addRes.json();
@@ -162,19 +168,17 @@ function Instructor() {
           throw new Error(result.message || 'Failed to add instructor');
         }
 
-        alert(`Instructor ${instructorData.instructorId} added successfully!`);
+        showSnackbar(`Instructor ${instructorData.instructorId} added successfully!`, 'success');
         setSearchMode();
       } catch (err) {
-        console.error('Error in save operation:', err);
-        alert('Error: ' + err.message);
+        showSnackbar(`Error: ${err.message}`, 'error');
       }
     }
   };
 
-  // felete instructor
   const handleDelete = async () => {
     if (!selectedInstructor) {
-      alert('Please select an instructor to delete');
+      showSnackbar('Please select an instructor to delete', 'warning');
       return;
     }
 
@@ -184,156 +188,200 @@ function Instructor() {
 
     try {
       const response = await fetch(`/api/instructor/deleteInstructor?instructorId=${selectedInstructor.instructorId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       if (!response.ok) {
         throw new Error('Instructor delete failed');
       }
 
-      alert(`Instructor with id ${selectedInstructor.instructorId} successfully deleted`);
+      showSnackbar(`Instructor ${selectedInstructor.instructorId} successfully deleted`, 'success');
       setSearchMode();
     } catch (err) {
-      alert('Error deleting instructor: ' + err.message);
+      showSnackbar(`Error deleting instructor: ${err.message}`, 'error');
     }
   };
 
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   return (
-    <div className="layout--sidebar">
+    <Box sx={{ display: 'flex' }}>
       <Sidebar />
-      <main className="layout--center">
-        <form className="card" onSubmit={(e) => e.preventDefault()}>
-          <div className="form-header">
-            <h2>Instructor Details</h2>
-            <div className="top-actions">
-              <button type="button" className="btn" onClick={setSearchMode}>Search</button>
-              <button type="button" className="btn btn--primary" onClick={setAddMode}>Add New</button>
-            </div>
-          </div>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          minHeight: '100vh',
+          backgroundColor: 'background.default',
+          padding: 4,
+        }}
+      >
+        <Container maxWidth="md">
+          <Card elevation={0} sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
+            <CardContent sx={{ padding: 4 }}>
+              {/* header */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                  Instructor Details
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant={formMode === 'search' ? 'contained' : 'outlined'}
+                    startIcon={<SearchIcon />}
+                    onClick={setSearchMode}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    variant={formMode === 'add' ? 'contained' : 'outlined'}
+                    startIcon={<AddIcon />}
+                    onClick={setAddMode}
+                  >
+                    Add New
+                  </Button>
+                </Box>
+              </Box>
 
-          {/* instructor ID dropdown for seach */}
-          {formMode === 'search' && (
-            <label htmlFor="instructorIdSelect">Instructor ID
-              <select 
-                name="instructorId" 
-                id="instructorIdSelect" 
-                className="form-input"
-                onChange={handleInstructorSelect}
-                value={selectedInstructor?.instructorId || ''}
-              >
-                <option value="">-- Choose an instructor to view --</option>
-                {instructors.map((instr) => (
-                  <option key={instr.instructorId} value={instr.instructorId}>
-                    {instr.instructorId}: {instr.firstName} {instr.lastName}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-
-          {/* instructor ID text for add */}
-          {formMode === 'add' && (
-            <label>Instructor ID
-              <input 
-                type="text" 
-                value="(Auto-generated on save)" 
-                readOnly 
-                style={{ background: '#f5f5f5' }}
-              />
-            </label>
-          )}
-
-          {/* name fields */}
-          <div className="grid-2">
-            <label>First Name
-              <input 
-                type="text" 
-                name="firstName" 
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>Last Name
-              <input 
-                type="text" 
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-          </div>
-
-          {/* address */}
-          <label>Address
-            <textarea 
-              name="address" 
-              rows="2"
-              value={formData.address}
-              onChange={handleInputChange}
-            />
-          </label>
-
-          {/* phone and email */}
-          <div className="grid-2">
-            <label>Phone
-              <input 
-                type="tel" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>Email
-              <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-          </div>
-
-          {/* preferred contact */}
-          <fieldset>
-            <legend>Preferred Contact</legend>
-            <div className="radio-row">
-              <label>
-                <input 
-                  type="radio" 
-                  name="preferredContact" 
-                  value="phone"
-                  checked={formData.preferredContact === 'phone'}
-                  onChange={handleRadioChange}
+              {/* instructor id dropdown or text */}
+              {formMode === 'search' ? (
+                <TextField
+                  select
+                  fullWidth
+                  label="Instructor ID"
+                  value={selectedInstructor?.instructorId || ''}
+                  onChange={handleInstructorSelect}
+                  sx={{ marginBottom: 3 }}
+                >
+                  <MenuItem value="">-- Choose an instructor to view --</MenuItem>
+                  {instructors.map((instr) => (
+                    <MenuItem key={instr.instructorId} value={instr.instructorId}>
+                      {instr.instructorId}: {instr.firstName} {instr.lastName}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              ) : (
+                <TextField
+                  fullWidth
+                  label="Instructor ID"
+                  value="(Auto-generated on save)"
+                  disabled
+                  sx={{ marginBottom: 3 }}
                 />
-                Phone
-              </label>
-              <label>
-                <input 
-                  type="radio" 
-                  name="preferredContact" 
-                  value="email"
-                  checked={formData.preferredContact === 'email'}
-                  onChange={handleRadioChange}
-                />
-                Email
-              </label>
-            </div>
-          </fieldset>
+              )}
 
-          {/* action buttons */}
-          <div className="btn-row">
-            <button type="button" className="btn" onClick={handleSave}>Save</button>
-            <button type="button" className="btn btn--danger" onClick={handleDelete}>Delete</button>
-            <button type="button" className="btn" onClick={clearForm}>Clear</button>
-            <Link to="/dashboard" className="btn">Exit</Link>
-          </div>
-        </form>
-      </main>
-    </div>
+              {/* name inputs */}
+              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="First Name"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Last Name"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* address */}
+              <TextField
+                fullWidth
+                multiline
+                rows={2}
+                label="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                sx={{ marginBottom: 3 }}
+              />
+
+              {/* contact info */}
+              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    required
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* preferred contact method */}
+              <FormControl component="fieldset" sx={{ marginBottom: 4 }}>
+                <FormLabel component="legend" sx={{ fontWeight: 600, marginBottom: 1 }}>
+                  Preferred Contact
+                </FormLabel>
+                <RadioGroup
+                  row
+                  name="preferredContact"
+                  value={formData.preferredContact}
+                  onChange={handleInputChange}
+                >
+                  <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+                  <FormControlLabel value="email" control={<Radio />} label="Email" />
+                </RadioGroup>
+              </FormControl>
+
+              {/* action buttons */}
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>
+                  Save
+                </Button>
+                <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
+                  Delete
+                </Button>
+                <Button variant="outlined" startIcon={<ClearIcon />} onClick={clearForm}>
+                  Clear
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
+
+      {/* notification popup */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }
 
