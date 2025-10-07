@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
-import {
-  Box,
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
-  Grid,
-  Alert,
-  Snackbar,
-} from '@mui/material';
+import {Box, Container, Card, CardContent, Typography, TextField, Button, MenuItem, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, Grid, Alert, Snackbar} from '@mui/material';
+
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -25,6 +9,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 
 function Class() {
+
+  // setting states
   const [formMode, setFormMode] = useState('search');
   const [classes, setClasses] = useState([]);
   const [instructors, setInstructors] = useState([]);
@@ -152,17 +138,20 @@ function Class() {
     }
   };
 
+  // search mode
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadClassDropdown();
   };
 
+  // add mode
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
+  // clears the form
   const clearForm = () => {
     setFormData({
       classId: '',
@@ -178,6 +167,7 @@ function Class() {
     setSelectedClass(null);
   };
 
+  // saves the class
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
