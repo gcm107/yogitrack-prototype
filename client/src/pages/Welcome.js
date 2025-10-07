@@ -54,7 +54,7 @@ function Welcome() {
                 marginBottom: 2,
               }}
             >
-              Welcome to YogiTrack
+              Currently in development
             </Typography>
             
             <Typography
@@ -63,7 +63,7 @@ function Welcome() {
               paragraph
               sx={{ marginBottom: 4 }}
             >
-              Your all-in-one studio management companion
+              Currently in development
             </Typography>
             
             <Button

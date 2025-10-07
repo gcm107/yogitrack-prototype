@@ -147,7 +147,7 @@ function Dashboard() {
                   Welcome to YogiTrack
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Manage your yoga studio with ease. Use the sidebar to navigate between different sections.
+                  Currently in development
                 </Typography>
               </CardContent>
             </Card>
