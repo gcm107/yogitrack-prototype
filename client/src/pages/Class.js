@@ -10,6 +10,8 @@ import styles from './Class.module.css';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function Class() {
+
+  // setting states
   const [formMode, setFormMode] = useState('search');
   const [classes, setClasses] = useState([]);
   const [instructors, setInstructors] = useState([]);
@@ -132,17 +134,20 @@ function Class() {
     }
   };
 
+  // search mode
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadClassDropdown();
   };
 
+  // add mode
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
+  // clears the form
   const clearForm = () => {
     setFormData({
       classId: '',
@@ -158,6 +163,7 @@ function Class() {
     setSelectedClass(null);
   };
 
+  // saves the class
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
