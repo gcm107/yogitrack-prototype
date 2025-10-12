@@ -1,4 +1,6 @@
-// instructor page
+// instructor page - can add, edit, and delete yoga instructors
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
@@ -8,14 +10,24 @@ import Button from '../components/Button';
 import Snackbar from '../components/Snackbar';
 import styles from './Instructor.module.css';
 
-// instructor functin logic
+// the main instructor component 
 function Instructor() {
+
+  // tracks whether we are searching or adding
   const [formMode, setFormMode] = useState('search');
+
+
+  //all instructors to show in dropdown
   const [instructors, setInstructors] = useState([]);
+  
+  // current selected instructor details
   const [selectedInstructor, setSelectedInstructor] = useState(null);
+
+
+  // for showing popup messages like "saved successfully"
   const [snackbar, setSnackbar] = useState({ open: false, message: '', type: 'success' });
 
-  // form fields
+  // all the form fields for instructor info
   const [formData, setFormData] = useState({
     instructorId: '',
     firstName: '',
@@ -26,14 +38,14 @@ function Instructor() {
     preferredContact: 'phone',
   });
 
-  // load instructors when teh page loads
+  // load the instructor list when the page loads
   useEffect(() => {
     if (formMode === 'search') {
       loadInstructorDropdown();
     }
   }, [formMode]);
 
-  // load instructors when the page loads
+  // function to load all instructors from the database
   const loadInstructorDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/instructor/getInstructorIds');
@@ -44,6 +56,7 @@ function Instructor() {
     }
   }, []);
 
+  // load details about the instructor from the dropdown
   const handleInstructorSelect = async (e) => {
     const instructorId = e.target.value;
     if (!instructorId) {
@@ -53,6 +66,7 @@ function Instructor() {
     }
 
     try {
+      // trying to get the instructor details by using the ID
       const response = await fetch(`/api/instructor/getInstructor?instructorId=${instructorId}`);
       if (!response.ok) throw new Error('Instructor search failed');
 
@@ -77,26 +91,26 @@ function Instructor() {
     }
   };
 
-  // handle input change
+  // update form fields when user types something
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // set search mode
+  // switch to search mode (viewing existing instructors)
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadInstructorDropdown();
   };
 
-  // set add mode
+  // switch to add mode (creating new instructor)
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
-  // clear form
+  // reset all form fields to empty
   const clearForm = () => {
     setFormData({
       instructorId: '',
@@ -110,16 +124,17 @@ function Instructor() {
     setSelectedInstructor(null);
   };
 
+  // save a new instructor or update existing one
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
-        // check if all required fields are filled
+        // make sure all important fields are filled in
         if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
           showSnackbar('Please fill in all required fields', 'warning');
           return;
         }
 
-        // check if instructor already exists
+        // check if an instructor with this name already exists
         const checkRes = await fetch(
           `/api/instructor/search?firstName=${formData.firstName}&lastName=${formData.lastName}`
         );
@@ -133,10 +148,11 @@ function Instructor() {
           }
         }
 
+        // get the next available instructor ID
         const idRes = await fetch('/api/instructor/getNextId');
         const { nextId } = await idRes.json();
 
-        // add instructor data
+        // prepare the instructor data to send to the server
         const instructorData = {
           instructorId: nextId,
           firstName: formData.firstName.trim(),
@@ -147,6 +163,7 @@ function Instructor() {
           preferredContact: formData.preferredContact,
         };
 
+        // send the new instructor to the database
         const addRes = await fetch('/api/instructor/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -158,7 +175,7 @@ function Instructor() {
           throw new Error(result.message || 'Failed to add instructor');
         }
 
-        // show success message
+        // show a success message
         showSnackbar(`Instructor ${instructorData.instructorId} added successfully!`, 'success');
         setSearchMode();
       } catch (err) {
@@ -167,7 +184,7 @@ function Instructor() {
     }
   };
 
-  // handle delete instructor
+  // delete an instructor from the database
   const handleDelete = async () => {
     if (!selectedInstructor) {
       showSnackbar('Please select an instructor to delete', 'warning');
@@ -194,18 +211,21 @@ function Instructor() {
     }
   };
 
-  // show snackbar
+  // helper function to show popup messages
   const showSnackbar = (message, type = 'success') => {
     setSnackbar({ open: true, message, type });
   };
 
-  //return the page
+  // the  page layout
   return (
     <div className={styles.layout}>
       <Sidebar />
       <main className={styles.main}>
         <div className={styles.container}>
           <Card>
+
+
+            {/* header with title and mode buttons */}
             <div className={styles.header}>
               <h1 className={styles.title}>Instructor Details</h1>
               <div className={styles.modeButtons}>
@@ -218,6 +238,7 @@ function Instructor() {
               </div>
             </div>
 
+            {/* shows select instructo (if mode is search)*/}
             {formMode === 'search' ? (
               <Select
                 label="Instructor ID"
@@ -233,9 +254,10 @@ function Instructor() {
                 ))}
               </Select>
             ) : (
-              <Input label="Instructor ID" value="(Auto-generated on save)" disabled />
+              <Input label="Instructor ID" value="Auto-generated on save" disabled />
             )}
 
+            {/* name fields  */}
             <div className={styles.formRow}>
               <Input
                 label="First Name"
@@ -253,6 +275,7 @@ function Instructor() {
               />
             </div>
 
+            {/* address field  */}
             <Input
               label="Address"
               name="address"
@@ -262,6 +285,7 @@ function Instructor() {
               rows={2}
             />
 
+            {/* contact info */}
             <div className={styles.formRow}>
               <Input
                 label="Phone"
@@ -281,6 +305,7 @@ function Instructor() {
               />
             </div>
 
+            {/* radio buttons -- preferred contact method */}
             <div className={styles.radioGroup}>
               <label className={styles.radioLabel}>
                 Preferred Contact <span className={styles.required}>*</span>
@@ -309,6 +334,7 @@ function Instructor() {
               </div>
             </div>
 
+            {/* action buttons */}
             <div className={styles.actions}>
               <Button variant="primary" onClick={handleSave}>Save</Button>
               <Button variant="error" onClick={handleDelete}>Delete</Button>
@@ -318,6 +344,9 @@ function Instructor() {
         </div>
       </main>
 
+
+
+      {/* popup notification component */}
       <Snackbar
         message={snackbar.message}
         type={snackbar.type}

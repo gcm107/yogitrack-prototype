@@ -1,4 +1,5 @@
-// import components
+// dashboard page - overview of the yoga studio with stats and info (but thats not implemented yet)
+
 import React from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
@@ -14,8 +15,12 @@ const stats = [
 
 function Dashboard() {
   return (
+    // main layout with sidebar on left and content on right
     <div className={styles.layout}>
       <Sidebar />
+
+      
+      {/*  main area with background image */}
       <main className={styles.main} style={{
         backgroundImage: `linear-gradient(135deg, rgba(92, 7, 24, 0.05) 0%, rgba(61, 6, 16, 0.05) 100%), url('/images/YogaClass.jpg')`,
         backgroundSize: 'cover',

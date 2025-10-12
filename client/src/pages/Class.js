@@ -1,3 +1,5 @@
+// class page - oga class schedules and details. add new classes, edit existing ones, and handle scheduling
+
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
@@ -7,17 +9,27 @@ import Button from '../components/Button';
 import Snackbar from '../components/Snackbar';
 import styles from './Class.module.css';
 
+// all the days of the week for the schedule dropdown
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function Class() {
 
-  // setting states
+  // track if we're searching for a class or adding a new one
   const [formMode, setFormMode] = useState('search');
+
+  // list of all classes to show in dropdown
   const [classes, setClasses] = useState([]);
+
+  // list of all instructors for the instructor dropdown
   const [instructors, setInstructors] = useState([]);
+
+  // the currently selected class 
   const [selectedClass, setSelectedClass] = useState(null);
+
+  // for showing popup message notifs
   const [snackbar, setSnackbar] = useState({ open: false, message: '', type: 'success' });
 
+  // all the form fields for class info
   const [formData, setFormData] = useState({
     classId: '',
     className: '',
@@ -30,6 +42,7 @@ function Class() {
     payRate: 45,
   });
 
+  // load the data we need when the page loads or mode changes 
   useEffect(() => {
     loadInstructorDropdown();
     if (formMode === 'search') {
@@ -37,6 +50,7 @@ function Class() {
     }
   }, [formMode]);
 
+  // function to load all classes from the database
   const loadClassDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/class/getAllClasses');
@@ -47,6 +61,7 @@ function Class() {
     }
   }, []);
 
+  // function to load all instructors for the dropdown
   const loadInstructorDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/instructor/getInstructorIds');
@@ -57,6 +72,7 @@ function Class() {
     }
   }, []);
 
+  // load  details about the class from the dropdown
   const handleClassSelect = async (e) => {
     const classId = e.target.value;
     if (!classId) {
@@ -92,6 +108,7 @@ function Class() {
     }
   };
 
+  // update form fields when user types something
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -134,20 +151,20 @@ function Class() {
     }
   };
 
-  // search mode
+  // switch to search mode -- viewing existing classes
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadClassDropdown();
   };
 
-  // add mode
+  // switch to add mode -- adding a class
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
-  // clears the form
+  // reset all form fields to empty
   const clearForm = () => {
     setFormData({
       classId: '',
@@ -163,15 +180,19 @@ function Class() {
     setSelectedClass(null);
   };
 
-  // saves the class
+  // save a new class or update existing one
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
+
+
+        // make sure all important fields are filled in
         if (!formData.className || !formData.instructorId || !formData.day || !formData.time) {
           showSnackbar('Please fill in all required fields', 'warning');
           return;
         }
 
+        // check if this class time conflicts with existing classes
         const conflictResult = await checkScheduleConflict(formData.day, formData.time, parseInt(formData.duration));
         if (conflictResult.hasConflict) {
           if (!window.confirm(`Schedule conflict detected: ${conflictResult.message}. Continue anyway?`)) {
@@ -179,9 +200,11 @@ function Class() {
           }
         }
 
+        // get the next available class ID
         const idRes = await fetch('/api/class/getNextId');
         const { nextId } = await idRes.json();
 
+        // prepare the data about to be sent
         const classData = {
           classId: nextId,
           className: formData.className.trim(),
@@ -198,6 +221,7 @@ function Class() {
           payRate: parseFloat(formData.payRate) || 45,
         };
 
+        // send the new class to the database
         const addRes = await fetch('/api/class/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -209,6 +233,7 @@ function Class() {
           throw new Error(result.message || 'Failed to add class');
         }
 
+        // show a success message/notif
         showSnackbar(`Class ${classData.classId} added successfully!`, 'success');
         setSearchMode();
       } catch (err) {
@@ -247,24 +272,33 @@ function Class() {
     setSnackbar({ open: true, message, type });
   };
 
+  // the actual page layout that is seen
   return (
+
     <div className={styles.layout}>
       <Sidebar />
+
       <main className={styles.main}>
         <div className={styles.container}>
           <Card>
+
+
+            {/* header with title and mode buttons */}
             <div className={styles.header}>
               <h1 className={styles.title}>Class Schedule Details</h1>
               <div className={styles.modeButtons}>
                 <Button variant={formMode === 'search' ? 'primary' : 'outlined'} onClick={setSearchMode}>
                   Search
                 </Button>
+
+
                 <Button variant={formMode === 'add' ? 'primary' : 'outlined'} onClick={setAddMode}>
                   Add New
                 </Button>
               </div>
             </div>
 
+            {/* dropdown to select class */}
             {formMode === 'search' ? (
               <Select
                 label="Class ID"
@@ -280,10 +314,12 @@ function Class() {
                 ))}
               </Select>
             ) : (
-              <Input label="Class ID" value="(Auto-generated on save)" disabled />
+              <Input label="Class ID" value="Auto-generated on save" disabled />
             )}
 
+            {/* class name and instructor fields in a row */}
             <div className={styles.formRow}>
+
               <Input
                 label="Class Name"
                 name="className"
@@ -291,6 +327,7 @@ function Class() {
                 onChange={handleInputChange}
                 required
               />
+
               <Select
                 label="Instructor"
                 name="instructorId"
@@ -305,8 +342,10 @@ function Class() {
                   </option>
                 ))}
               </Select>
+
             </div>
 
+            {/* radio buttons for class type */}
             <div className={styles.radioGroup}>
               <label className={styles.radioLabel}>Class Type</label>
               <div className={styles.radioOptions}>
@@ -320,6 +359,8 @@ function Class() {
                   />
                   <span>General</span>
                 </label>
+
+
                 <label className={styles.radioOption}>
                   <input
                     type="radio"
@@ -333,6 +374,7 @@ function Class() {
               </div>
             </div>
 
+            {/* description area for the class */}
             <Input
               label="Description"
               name="description"
@@ -342,6 +384,7 @@ function Class() {
               rows={2}
             />
 
+          
             <div className={styles.formRow}>
               <Select
                 label="Day"
@@ -367,6 +410,7 @@ function Class() {
               />
             </div>
 
+            {/* duration and pay rate */}
             <div className={styles.formRow}>
               <Input
                 label="Duration (minutes)"
@@ -384,6 +428,7 @@ function Class() {
               />
             </div>
 
+            {/* action buttons */}
             <div className={styles.actions}>
               <Button variant="primary" onClick={handleSave}>Save</Button>
               <Button variant="error" onClick={handleDelete}>Delete</Button>
@@ -393,6 +438,8 @@ function Class() {
         </div>
       </main>
 
+
+      {/* popup notification component */}
       <Snackbar
         message={snackbar.message}
         type={snackbar.type}
@@ -400,6 +447,7 @@ function Class() {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
     </div>
+    
   );
 }
 
