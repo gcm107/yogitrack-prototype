@@ -1,0 +1,82 @@
+.layout {
+  display: flex;
+}
+
+.main {
+  margin-left: 280px;
+  flex-grow: 1;
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(92, 7, 24, 0.05) 0%, rgba(61, 6, 16, 0.05) 100%);
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 32px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.iconBox {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.statIcon {
+  font-size: 1.8rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.statTitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.welcomeTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-main);
+  margin-bottom: 12px;
+}
+
+.welcomeText {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}

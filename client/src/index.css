@@ -1,0 +1,36 @@
+/* main css file for the entire app. 
+for colors and fonts that are used */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* colors */
+  --primary-main: rgb(92, 7, 24);
+  --primary-light: #C1272D;
+  --primary-dark: rgb(61, 6, 16);
+  --secondary-main: #2C3E50;
+  --secondary-light: #546E7A;
+  --background-default: #F8F9FA;
+  --background-paper: #FFFFFF;
+  --text-primary: #2C3E50;
+  --text-secondary: #546E7A;
+  --error-main: #D32F2F;
+  --success-main: #388E3C;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-default);
+  color: var(--text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}

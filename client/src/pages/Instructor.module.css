@@ -1,0 +1,80 @@
+.layout {
+  display: flex;
+}
+
+.main {
+  margin-left: 280px;
+  flex-grow: 1;
+  min-height: 100vh;
+  background-color: var(--background-default);
+  padding: 32px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  margin: 0;
+}
+
+.modeButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.radioGroup {
+  margin: 24px 0;
+}
+
+.radioLabel {
+  display: block;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.required {
+  color: var(--error-main);
+}
+
+.radioOptions {
+  display: flex;
+  gap: 24px;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.radioOption input[type="radio"] {
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
