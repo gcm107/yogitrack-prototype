@@ -1,161 +1,64 @@
+
+// this is the sidebar that shows on the left side
+// it has the logo and all the menu links
+
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Box,
-  Divider,
-  Typography,
-} from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import ClassIcon from '@mui/icons-material/Class';
-import PeopleIcon from '@mui/icons-material/People';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import LogoutIcon from '@mui/icons-material/Logout';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import { Link, useLocation } from 'react-router-dom';
+import styles from './Sidebar.module.css';
 
-const drawerWidth = 280;
+const menuItems = [
+  { text: 'Dashboard', path: '/dashboard'},
+  { text: 'Instructors', path: '/instructor'},
+  { text: 'Class Schedule', path: '/class'},
+  { text: 'Customers', path: '/customer'},
+  { text: 'Packages', path: '/package'},
+  { text: 'Sales', path: '/sale'},
+  { text: 'Attendance', path: '/attendance'},
+  { text: 'Reports', path: '/reports'},
+];
 
-// sidebar nav
 function Sidebar() {
+  // gets the current page locaton to highlight the active mnu item
   const location = useLocation();
 
-  const menuItems = [
-    { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-    { text: 'Instructors', path: '/instructor', icon: <PersonIcon /> },
-    { text: 'Class Schedule', path: '/class', icon: <ClassIcon /> },
-    { text: 'Customers', path: '/customer', icon: <PeopleIcon /> },
-    { text: 'Packages', path: '/package', icon: <CardGiftcardIcon /> },
-    { text: 'Sales', path: '/sale', icon: <ShoppingCartIcon /> },
-    { text: 'Attendance', path: '/attendance', icon: <CheckCircleIcon /> },
-    { text: 'Reports', path: '/reports', icon: <AssessmentIcon /> },
-  ];
-
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-          backgroundColor: '#FFFFFF',
-          borderRight: '1px solid rgba(0, 0, 0, 0.08)',
-        },
-      }}
-    >
-      {/* logo */}
-      <Box
-        sx={{
-          padding: 3,
-          textAlign: 'center',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
-        }}
-      >
-        <RouterLink to="/dashboard" style={{ textDecoration: 'none' }}>
-          <Box
-            component="img"
-            src="/images/Logo.png"
-            alt="YogiTrack Logo"
-            sx={{
-              width: 80,
-              height: 80,
-              margin: '0 auto 12px',
-              display: 'block',
-            }}
-          />
-          <Typography
-            variant="h6"
-            sx={{
-              color: 'primary.main',
-              fontWeight: 700,
-            }}
-          >
-            YogiTrack
-          </Typography>
-        </RouterLink>
-      </Box>
+    <nav className={styles.sidebar}>
+      <div className={styles.logoSection}>
+        <Link to="/dashboard" className={styles.logoLink}>
+          <img src="/images/Logo.png" alt="YogiTrack Logo" className={styles.logo} />
+          <h1 className={styles.title}>YogiTrack</h1>
+        </Link>
+      </div>
 
-      {/* nav links */}
-      <List sx={{ padding: 2 }}>
+      <ul className={styles.menu}>
         {menuItems.map((item) => {
+          // check if this item is the current page
           const isActive = location.pathname === item.path;
           return (
-            <ListItem key={item.text} disablePadding sx={{ marginBottom: 1 }}>
-              <ListItemButton
-                component={RouterLink}
+            <li key={item.text}>
+              <Link
                 to={item.path}
-                sx={{
-                  borderRadius: 2,
-                  backgroundColor: isActive ? 'primary.main' : 'transparent',
-                  color: isActive ? 'white' : 'text.primary',
-                  '&:hover': {
-                    backgroundColor: isActive
-                      ? 'primary.dark'
-                      : 'action.hover',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
+                className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
               >
-                <ListItemIcon
-                  sx={{
-                    color: isActive ? 'white' : 'primary.main',
-                    minWidth: 40,
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: isActive ? 600 : 500,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
+                <span className={styles.icon}>{item.icon}</span>
+                <span>{item.text}</span>
+              </Link>
+            </li>
           );
         })}
-      </List>
+      </ul>
 
-      <Divider sx={{ marginX: 2 }} />
+      <div className={styles.divider}></div>
 
-      {/* logout */}
-      <List sx={{ padding: 2 }}>
-        <ListItem disablePadding>
-          <ListItemButton
-            component={RouterLink}
-            to="/"
-            sx={{
-              borderRadius: 2,
-              color: 'text.secondary',
-              '&:hover': {
-                backgroundColor: 'error.light',
-                color: 'error.main',
-              },
-              transition: 'all 0.3s ease',
-            }}
-          >
-            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Log Out"
-              primaryTypographyProps={{
-                fontWeight: 500,
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Drawer>
+      <ul className={styles.menu}>
+        <li>
+          <Link to="/" className={`${styles.menuItem} ${styles.logout}`}>
+            <span className={styles.icon}>🚪</span>
+            <span>Log Out</span>
+          </Link>
+        </li>
+      </ul>
+    </nav>
   );
 }
 

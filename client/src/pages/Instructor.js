@@ -1,34 +1,19 @@
-import React, { useState, useEffect } from 'react';
+// instructor page
+import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
-import {
-  Box,
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
-  Grid,
-  Alert,
-  Snackbar,
-} from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ClearIcon from '@mui/icons-material/Clear';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import Card from '../components/Card';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import Button from '../components/Button';
+import Snackbar from '../components/Snackbar';
+import styles from './Instructor.module.css';
 
+// instructor functin logic
 function Instructor() {
   const [formMode, setFormMode] = useState('search');
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', type: 'success' });
 
   // form fields
   const [formData, setFormData] = useState({
@@ -41,14 +26,15 @@ function Instructor() {
     preferredContact: 'phone',
   });
 
-  // load instructors when page loads
+  // load instructors when teh page loads
   useEffect(() => {
     if (formMode === 'search') {
       loadInstructorDropdown();
     }
   }, [formMode]);
 
-  const loadInstructorDropdown = async () => {
+  // load instructors when the page loads
+  const loadInstructorDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/instructor/getInstructorIds');
       const data = await response.json();
@@ -56,7 +42,7 @@ function Instructor() {
     } catch (err) {
       showSnackbar('Error loading instructors', 'error');
     }
-  };
+  }, []);
 
   const handleInstructorSelect = async (e) => {
     const instructorId = e.target.value;
@@ -91,25 +77,26 @@ function Instructor() {
     }
   };
 
+  // handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // set search mode
   const setSearchMode = () => {
     setFormMode('search');
     clearForm();
     loadInstructorDropdown();
   };
 
+  // set add mode
   const setAddMode = () => {
     setFormMode('add');
     clearForm();
   };
 
+  // clear form
   const clearForm = () => {
     setFormData({
       instructorId: '',
@@ -126,11 +113,13 @@ function Instructor() {
   const handleSave = async () => {
     if (formMode === 'add') {
       try {
+        // check if all required fields are filled
         if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
           showSnackbar('Please fill in all required fields', 'warning');
           return;
         }
 
+        // check if instructor already exists
         const checkRes = await fetch(
           `/api/instructor/search?firstName=${formData.firstName}&lastName=${formData.lastName}`
         );
@@ -147,6 +136,7 @@ function Instructor() {
         const idRes = await fetch('/api/instructor/getNextId');
         const { nextId } = await idRes.json();
 
+        // add instructor data
         const instructorData = {
           instructorId: nextId,
           firstName: formData.firstName.trim(),
@@ -168,6 +158,7 @@ function Instructor() {
           throw new Error(result.message || 'Failed to add instructor');
         }
 
+        // show success message
         showSnackbar(`Instructor ${instructorData.instructorId} added successfully!`, 'success');
         setSearchMode();
       } catch (err) {
@@ -176,6 +167,7 @@ function Instructor() {
     }
   };
 
+  // handle delete instructor
   const handleDelete = async () => {
     if (!selectedInstructor) {
       showSnackbar('Please select an instructor to delete', 'warning');
@@ -202,186 +194,137 @@ function Instructor() {
     }
   };
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbar({ open: true, message, severity });
+  // show snackbar
+  const showSnackbar = (message, type = 'success') => {
+    setSnackbar({ open: true, message, type });
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
+  //return the page
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className={styles.layout}>
       <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          minHeight: '100vh',
-          backgroundColor: 'background.default',
-          padding: 4,
-        }}
-      >
-        <Container maxWidth="md">
-          <Card elevation={0} sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
-            <CardContent sx={{ padding: 4 }}>
-              {/* header */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                  Instructor Details
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant={formMode === 'search' ? 'contained' : 'outlined'}
-                    startIcon={<SearchIcon />}
-                    onClick={setSearchMode}
-                  >
-                    Search
-                  </Button>
-                  <Button
-                    variant={formMode === 'add' ? 'contained' : 'outlined'}
-                    startIcon={<AddIcon />}
-                    onClick={setAddMode}
-                  >
-                    Add New
-                  </Button>
-                </Box>
-              </Box>
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <Card>
+            <div className={styles.header}>
+              <h1 className={styles.title}>Instructor Details</h1>
+              <div className={styles.modeButtons}>
+                <Button variant={formMode === 'search' ? 'primary' : 'outlined'} onClick={setSearchMode}>
+                  Search
+                </Button>
+                <Button variant={formMode === 'add' ? 'primary' : 'outlined'} onClick={setAddMode}>
+                  Add New
+                </Button>
+              </div>
+            </div>
 
-              {/* instructor id dropdown or text */}
-              {formMode === 'search' ? (
-                <TextField
-                  select
-                  fullWidth
-                  label="Instructor ID"
-                  value={selectedInstructor?.instructorId || ''}
-                  onChange={handleInstructorSelect}
-                  sx={{ marginBottom: 3 }}
-                >
-                  <MenuItem value="">-- Choose an instructor to view --</MenuItem>
-                  {instructors.map((instr) => (
-                    <MenuItem key={instr.instructorId} value={instr.instructorId}>
-                      {instr.instructorId}: {instr.firstName} {instr.lastName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              ) : (
-                <TextField
-                  fullWidth
-                  label="Instructor ID"
-                  value="(Auto-generated on save)"
-                  disabled
-                  sx={{ marginBottom: 3 }}
-                />
-              )}
+            {formMode === 'search' ? (
+              <Select
+                label="Instructor ID"
+                name="instructorId"
+                value={selectedInstructor?.instructorId || ''}
+                onChange={handleInstructorSelect}
+              >
+                <option value="">-- Choose an instructor to view --</option>
+                {instructors.map((instr) => (
+                  <option key={instr.instructorId} value={instr.instructorId}>
+                    {instr.instructorId}: {instr.firstName} {instr.lastName}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <Input label="Instructor ID" value="(Auto-generated on save)" disabled />
+            )}
 
-              {/* name inputs */}
-              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="First Name"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-              </Grid>
-
-              {/* address */}
-              <TextField
-                fullWidth
-                multiline
-                rows={2}
-                label="Address"
-                name="address"
-                value={formData.address}
+            <div className={styles.formRow}>
+              <Input
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleInputChange}
-                sx={{ marginBottom: 3 }}
+                required
               />
+              <Input
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
 
-              {/* contact info */}
-              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
+            <Input
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              multiline
+              rows={2}
+            />
+
+            <div className={styles.formRow}>
+              <Input
+                label="Phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className={styles.radioGroup}>
+              <label className={styles.radioLabel}>
+                Preferred Contact <span className={styles.required}>*</span>
+              </label>
+              <div className={styles.radioOptions}>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="preferredContact"
+                    value="phone"
+                    checked={formData.preferredContact === 'phone'}
                     onChange={handleInputChange}
                   />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
+                  <span>Phone</span>
+                </label>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="preferredContact"
+                    value="email"
+                    checked={formData.preferredContact === 'email'}
                     onChange={handleInputChange}
                   />
-                </Grid>
-              </Grid>
+                  <span>Email</span>
+                </label>
+              </div>
+            </div>
 
-              {/* preferred contact method */}
-              <FormControl component="fieldset" sx={{ marginBottom: 4 }}>
-                <FormLabel component="legend" sx={{ fontWeight: 600, marginBottom: 1 }}>
-                  Preferred Contact
-                </FormLabel>
-                <RadioGroup
-                  row
-                  name="preferredContact"
-                  value={formData.preferredContact}
-                  onChange={handleInputChange}
-                >
-                  <FormControlLabel value="phone" control={<Radio />} label="Phone" />
-                  <FormControlLabel value="email" control={<Radio />} label="Email" />
-                </RadioGroup>
-              </FormControl>
-
-              {/* action buttons */}
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>
-                  Save
-                </Button>
-                <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
-                  Delete
-                </Button>
-                <Button variant="outlined" startIcon={<ClearIcon />} onClick={clearForm}>
-                  Clear
-                </Button>
-              </Box>
-            </CardContent>
+            <div className={styles.actions}>
+              <Button variant="primary" onClick={handleSave}>Save</Button>
+              <Button variant="error" onClick={handleDelete}>Delete</Button>
+              <Button variant="outlined" onClick={clearForm}>Clear</Button>
+            </div>
           </Card>
-        </Container>
-      </Box>
+        </div>
+      </main>
 
-      {/* notification popup */}
       <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+        message={snackbar.message}
+        type={snackbar.type}
+        isOpen={snackbar.open}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+    </div>
   );
 }
 

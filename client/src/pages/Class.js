@@ -1,35 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
-import {
-  Box,
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
-  Grid,
-  Alert,
-  Snackbar,
-} from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ClearIcon from '@mui/icons-material/Clear';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import Card from '../components/Card';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import Button from '../components/Button';
+import Snackbar from '../components/Snackbar';
+import styles from './Class.module.css';
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function Class() {
   const [formMode, setFormMode] = useState('search');
   const [classes, setClasses] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', type: 'success' });
 
   const [formData, setFormData] = useState({
     classId: '',
@@ -43,8 +28,6 @@ function Class() {
     payRate: 45,
   });
 
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
   useEffect(() => {
     loadInstructorDropdown();
     if (formMode === 'search') {
@@ -52,7 +35,7 @@ function Class() {
     }
   }, [formMode]);
 
-  const loadClassDropdown = async () => {
+  const loadClassDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/class/getAllClasses');
       const data = await response.json();
@@ -60,9 +43,9 @@ function Class() {
     } catch (err) {
       showSnackbar('Error loading classes', 'error');
     }
-  };
+  }, []);
 
-  const loadInstructorDropdown = async () => {
+  const loadInstructorDropdown = useCallback(async () => {
     try {
       const response = await fetch('/api/instructor/getInstructorIds');
       const data = await response.json();
@@ -70,7 +53,7 @@ function Class() {
     } catch (err) {
       showSnackbar('Error loading instructors', 'error');
     }
-  };
+  }, []);
 
   const handleClassSelect = async (e) => {
     const classId = e.target.value;
@@ -109,10 +92,7 @@ function Class() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const checkScheduleConflict = async (day, time, duration) => {
@@ -257,216 +237,163 @@ function Class() {
     }
   };
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbar({ open: true, message, severity });
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
+  const showSnackbar = (message, type = 'success') => {
+    setSnackbar({ open: true, message, type });
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className={styles.layout}>
       <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          minHeight: '100vh',
-          backgroundColor: 'background.default',
-          padding: 4,
-        }}
-      >
-        <Container maxWidth="md">
-          <Card elevation={0} sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)' }}>
-            <CardContent sx={{ padding: 4 }}>
-              {/* header */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                  Class Schedule Details
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant={formMode === 'search' ? 'contained' : 'outlined'}
-                    startIcon={<SearchIcon />}
-                    onClick={setSearchMode}
-                  >
-                    Search
-                  </Button>
-                  <Button
-                    variant={formMode === 'add' ? 'contained' : 'outlined'}
-                    startIcon={<AddIcon />}
-                    onClick={setAddMode}
-                  >
-                    Add New
-                  </Button>
-                </Box>
-              </Box>
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <Card>
+            <div className={styles.header}>
+              <h1 className={styles.title}>Class Schedule Details</h1>
+              <div className={styles.modeButtons}>
+                <Button variant={formMode === 'search' ? 'primary' : 'outlined'} onClick={setSearchMode}>
+                  Search
+                </Button>
+                <Button variant={formMode === 'add' ? 'primary' : 'outlined'} onClick={setAddMode}>
+                  Add New
+                </Button>
+              </div>
+            </div>
 
-              {/* class id dropdown or text */}
-              {formMode === 'search' ? (
-                <TextField
-                  select
-                  fullWidth
-                  label="Class ID"
-                  value={selectedClass?.classId || ''}
-                  onChange={handleClassSelect}
-                  sx={{ marginBottom: 3 }}
-                >
-                  <MenuItem value="">-- Choose a class to view --</MenuItem>
-                  {classes.map((cls) => (
-                    <MenuItem key={cls.classId} value={cls.classId}>
-                      {cls.classId}: {cls.className}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              ) : (
-                <TextField fullWidth label="Class ID" value="(Auto-generated on save)" disabled sx={{ marginBottom: 3 }} />
-              )}
+            {formMode === 'search' ? (
+              <Select
+                label="Class ID"
+                name="classId"
+                value={selectedClass?.classId || ''}
+                onChange={handleClassSelect}
+              >
+                <option value="">-- Choose a class to view --</option>
+                {classes.map((cls) => (
+                  <option key={cls.classId} value={cls.classId}>
+                    {cls.classId}: {cls.className}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <Input label="Class ID" value="(Auto-generated on save)" disabled />
+            )}
 
-              {/* class name and instructor */}
-              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Class Name"
-                    name="className"
-                    value={formData.className}
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    select
-                    fullWidth
-                    required
-                    label="Instructor"
-                    name="instructorId"
-                    value={formData.instructorId}
-                    onChange={handleInputChange}
-                  >
-                    <MenuItem value="">-- Choose an instructor --</MenuItem>
-                    {instructors.map((instr) => (
-                      <MenuItem key={instr.instructorId} value={instr.instructorId}>
-                        {instr.instructorId}: {instr.firstName} {instr.lastName}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-              </Grid>
-
-              {/* general or special class */}
-              <FormControl component="fieldset" sx={{ marginBottom: 3 }}>
-                <FormLabel component="legend" sx={{ fontWeight: 600, marginBottom: 1 }}>
-                  Class Type
-                </FormLabel>
-                <RadioGroup row name="classType" value={formData.classType} onChange={handleInputChange}>
-                  <FormControlLabel value="General" control={<Radio />} label="General" />
-                  <FormControlLabel value="Special" control={<Radio />} label="Special" />
-                </RadioGroup>
-              </FormControl>
-
-              {/* description */}
-              <TextField
-                fullWidth
-                multiline
-                rows={2}
-                label="Description"
-                name="description"
-                value={formData.description}
+            <div className={styles.formRow}>
+              <Input
+                label="Class Name"
+                name="className"
+                value={formData.className}
                 onChange={handleInputChange}
-                sx={{ marginBottom: 3 }}
+                required
               />
+              <Select
+                label="Instructor"
+                name="instructorId"
+                value={formData.instructorId}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">-- Choose an instructor --</option>
+                {instructors.map((instr) => (
+                  <option key={instr.instructorId} value={instr.instructorId}>
+                    {instr.instructorId}: {instr.firstName} {instr.lastName}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-              {/* day and time */}
-              <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    select
-                    fullWidth
-                    required
-                    label="Day"
-                    name="day"
-                    value={formData.day}
+            <div className={styles.radioGroup}>
+              <label className={styles.radioLabel}>Class Type</label>
+              <div className={styles.radioOptions}>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="classType"
+                    value="General"
+                    checked={formData.classType === 'General'}
                     onChange={handleInputChange}
-                  >
-                    <MenuItem value="">-- Choose a day --</MenuItem>
-                    {days.map((day) => (
-                      <MenuItem key={day} value={day}>
-                        {day}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Time"
-                    name="time"
-                    type="time"
-                    value={formData.time}
-                    onChange={handleInputChange}
-                    InputLabelProps={{ shrink: true }}
                   />
-                </Grid>
-              </Grid>
+                  <span>General</span>
+                </label>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="classType"
+                    value="Special"
+                    checked={formData.classType === 'Special'}
+                    onChange={handleInputChange}
+                  />
+                  <span>Special</span>
+                </label>
+              </div>
+            </div>
 
-              <Grid container spacing={2} sx={{ marginBottom: 4 }}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Duration (minutes)"
-                    name="duration"
-                    type="number"
-                    value={formData.duration}
-                    onChange={handleInputChange}
-                    inputProps={{ min: 30, max: 120 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Pay Rate ($)"
-                    name="payRate"
-                    type="number"
-                    value={formData.payRate}
-                    onChange={handleInputChange}
-                    inputProps={{ min: 20, max: 100, step: 5 }}
-                  />
-                </Grid>
-              </Grid>
+            <Input
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              multiline
+              rows={2}
+            />
 
-              {/* action buttons */}
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>
-                  Save
-                </Button>
-                <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={handleDelete}>
-                  Delete
-                </Button>
-                <Button variant="outlined" startIcon={<ClearIcon />} onClick={clearForm}>
-                  Clear
-                </Button>
-              </Box>
-            </CardContent>
+            <div className={styles.formRow}>
+              <Select
+                label="Day"
+                name="day"
+                value={formData.day}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">-- Choose a day --</option>
+                {days.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                label="Time"
+                name="time"
+                type="time"
+                value={formData.time}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className={styles.formRow}>
+              <Input
+                label="Duration (minutes)"
+                name="duration"
+                type="number"
+                value={formData.duration}
+                onChange={handleInputChange}
+              />
+              <Input
+                label="Pay Rate ($)"
+                name="payRate"
+                type="number"
+                value={formData.payRate}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className={styles.actions}>
+              <Button variant="primary" onClick={handleSave}>Save</Button>
+              <Button variant="error" onClick={handleDelete}>Delete</Button>
+              <Button variant="outlined" onClick={clearForm}>Clear</Button>
+            </div>
           </Card>
-        </Container>
-      </Box>
+        </div>
+      </main>
 
-      {/* notification popup */}
       <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+        message={snackbar.message}
+        type={snackbar.type}
+        isOpen={snackbar.open}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+    </div>
   );
 }
 
