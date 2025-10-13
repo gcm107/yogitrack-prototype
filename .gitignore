@@ -140,5 +140,13 @@ vite.config.ts.timestamp-*
 
 # notes folder
 notes/
+
+# DATA folder
+data/
+
+# build folder
+build/
+client/build/
+
 .DS_Store
 .gitignore

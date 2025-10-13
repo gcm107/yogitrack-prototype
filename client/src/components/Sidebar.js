@@ -53,7 +53,7 @@ function Sidebar() {
       <ul className={styles.menu}>
         <li>
           <Link to="/" className={`${styles.menuItem} ${styles.logout}`}>
-            <span className={styles.icon}>🚪</span>
+            <span className={styles.icon}></span>
             <span>Log Out</span>
           </Link>
         </li>

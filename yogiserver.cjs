@@ -9,12 +9,12 @@ app.use(express.json());
 // api routes
 app.use("/api/instructor", require("./routes/instructorRoutes.cjs"));
 app.use("/api/class", require("./routes/classRoutes.cjs"));
-// routes to be added
-// app.use("/api/customer", require("./routes/customerRoutes.cjs"));
-// app.use("/api/package", require("./routes/packageRoutes.cjs"));
-// app.use("/api/sale", require("./routes/saleRoutes.cjs"));
-// app.use("/api/attendance", require("./routes/attendanceRoutes.cjs"));
-// app.use("/api/reports", require("./routes/reportsRoutes.cjs"));
+
+app.use("/api/customer", require("./routes/customerRoutes.cjs"));
+app.use("/api/package", require("./routes/packageRoutes.cjs"));
+app.use("/api/sale", require("./routes/saleRoutes.cjs"));
+app.use("/api/attendance", require("./routes/attendanceRoutes.cjs"));
+app.use("/api/reports", require("./routes/reportsRoutes.cjs"));
 
 // datch-all route
 app.use((req, res, next) => {

@@ -1,0 +1,99 @@
+/* styles for the attendance page */
+
+
+.layout {
+  display: flex;
+}
+
+.main {
+  margin-left: 280px;
+  flex-grow: 1;
+  min-height: 100vh;
+  background-color: var(--background-default);
+  padding: 32px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  margin: 0;
+}
+
+.customerSection {
+  margin: 24px 0;
+  padding: 20px;
+  background-color: var(--background-paper);
+  border-radius: 8px;
+}
+
+.customerSection h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.customerSelector {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+}
+
+.customerSelector > * {
+  flex: 1;
+}
+
+.selectedCustomers {
+  margin: 24px 0;
+  padding: 20px;
+  background-color: var(--background-paper);
+  border-radius: 8px;
+}
+
+.selectedCustomers h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.customerList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.customerItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.customerItem span {
+  font-weight: 500;
+}
+
+.required {
+  color: var(--error-main);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}

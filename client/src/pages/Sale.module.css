@@ -1,0 +1,50 @@
+/* styles for the sale page */
+
+
+.layout {
+  display: flex;
+}
+
+.main {
+  margin-left: 280px;
+  flex-grow: 1;
+  min-height: 100vh;
+  background-color: var(--background-default);
+  padding: 32px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  margin: 0;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.required {
+  color: var(--error-main);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
