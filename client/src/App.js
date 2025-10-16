@@ -4,6 +4,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import PublicSchedule from './pages/PublicSchedule';
 import Welcome from './pages/Welcome';
 import Dashboard from './pages/Dashboard';
 import Instructor from './pages/Instructor';
@@ -19,7 +20,8 @@ function App() {
     <Router>
       <Routes>
         {/* routes to the different pages */}
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<PublicSchedule />} />
+        <Route path="/login" element={<Welcome />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/instructor" element={<Instructor />} />
         <Route path="/class" element={<Class />} />

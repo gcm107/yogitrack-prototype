@@ -52,6 +52,12 @@
   color: #2C3E50;
   font-weight: 500;
   transition: all 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: left;
 }
 
 .menuItem:hover {
@@ -73,6 +79,21 @@
   height: 1px;
   background-color: rgba(0, 0, 0, 0.08);
   margin: 16px;
+}
+
+.userSection {
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.02);
+  margin: 0 16px 16px;
+  border-radius: 8px;
+}
+
+.username {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
 }
 
 .logout:hover {

@@ -1,0 +1,148 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(92, 7, 24, 0.03) 0%, rgba(61, 6, 16, 0.03) 100%);
+  padding: 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 32px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  display: block;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+}
+
+.scheduleContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.message {
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  padding: 48px;
+}
+
+.error {
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--error-main);
+  padding: 48px;
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.dayCard {
+  min-height: 200px;
+}
+
+.dayTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-main);
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--primary-main);
+}
+
+.noClasses {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 32px 0;
+}
+
+.classList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.classItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(92, 7, 24, 0.02);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-main);
+}
+
+.classTime {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary-main);
+  min-width: 60px;
+}
+
+.classInfo {
+  flex: 1;
+}
+
+.className {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.classType {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+.classDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.classDuration {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .weekGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .classItem {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .classTime {
+    min-width: auto;
+  }
+}
+

@@ -1,10 +1,8 @@
 # YOGITRACK PROTOTYPE
 MERN based full stack web app for managing yoga studios
 
-## TODO
-- Fix dashboard statistics to show real data
-- Add user login and authentication
-- Add customer and package search functionality
+**Login:** username='manager', password='password123'
+
 
 ## USE CASES
 

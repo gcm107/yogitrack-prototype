@@ -32,3 +32,24 @@
   color: var(--text-secondary);
   margin-bottom: 32px;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.error {
+  color: var(--error-main);
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: left;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 8px 0 0;
+  font-style: italic;
+}

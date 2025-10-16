@@ -2,8 +2,8 @@
 // this is the sidebar that shows on the left side
 // it has the logo and all the menu links
 
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 
 const menuItems = [
@@ -20,6 +20,23 @@ const menuItems = [
 function Sidebar() {
   // gets the current page locaton to highlight the active mnu item
   const location = useLocation();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
+  // load username
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUsername(userData.username);
+    }
+  }, []);
+
+  // handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
     <nav className={styles.sidebar}>
@@ -50,12 +67,16 @@ function Sidebar() {
 
       <div className={styles.divider}></div>
 
+      <div className={styles.userSection}>
+        <p className={styles.username}>Logged in as: {username}</p>
+      </div>
+
       <ul className={styles.menu}>
         <li>
-          <Link to="/" className={`${styles.menuItem} ${styles.logout}`}>
+          <button onClick={handleLogout} className={`${styles.menuItem} ${styles.logout}`}>
             <span className={styles.icon}></span>
             <span>Log Out</span>
-          </Link>
+          </button>
         </li>
       </ul>
     </nav>

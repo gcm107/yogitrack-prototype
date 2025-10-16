@@ -1,19 +1,42 @@
-// dashboard page - overview of the yoga studio with stats and info (but thats not implemented yet)
+// dashboard page - overview of the yoga studio with stats and info
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
 import styles from './Dashboard.module.css';
 
-// stats on the dashboard page, like total instructors, active classes etc
-const stats = [
-  { title: 'Total Instructors', value: '-', color: 'rgb(92, 7, 24)' },
-  { title: 'Active Classes', value: '-', color: 'rgb(61, 6, 16)' },
-  { title: 'Total Customers', value: '-', color: '#C1272D' },
-  { title: 'Monthly Revenue', value: '-', color: '#388E3C' },
-];
-
 function Dashboard() {
+  // store the stats we get from the database
+  const [stats, setStats] = useState([
+    { title: 'Total Instructors', value: '-', color: 'rgb(92, 7, 24)' },
+    { title: 'Active Classes', value: '-', color: 'rgb(61, 6, 16)' },
+    { title: 'Total Customers', value: '-', color: '#C1272D' },
+    { title: 'Monthly Revenue', value: '-', color: '#388E3C' },
+  ]);
+
+  // load the stats when the page opens
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  // get the stats from the server
+  const loadStats = async () => {
+    try {
+      const response = await fetch('/api/dashboard/stats');
+      const data = await response.json();
+      
+      // update the stats with real data
+      setStats([
+        { title: 'Total Instructors', value: data.totalInstructors, color: 'rgb(92, 7, 24)' },
+        { title: 'Active Classes', value: data.totalClasses, color: 'rgb(61, 6, 16)' },
+        { title: 'Total Customers', value: data.totalCustomers, color: '#C1272D' },
+        { title: 'Monthly Revenue', value: `$${data.monthlyRevenue}`, color: '#388E3C' },
+      ]);
+    } catch (err) {
+      console.error('Error loading stats:', err);
+    }
+  };
+
   return (
     // main layout with sidebar on left and content on right
     <div className={styles.layout}>
@@ -43,9 +66,9 @@ function Dashboard() {
           </div>
 
           <Card>
-            <h2 className={styles.welcomeTitle}>YogiTrack is currently under development</h2>
+            <h2 className={styles.welcomeTitle}>Management Portal</h2>
             <p className={styles.welcomeText}>
-              Use the sidebar to navigate between different sections.
+              Add classes, instructors, customers, packages, sales, and attendance.
             </p>
           </Card>
         </div>

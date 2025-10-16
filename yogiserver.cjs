@@ -2,11 +2,16 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
+// connect to mongodb
+require("./config/mongodbconn.cjs");
+
 //  static files from   react build folder
 app.use(express.static(path.join(__dirname, "client/build")));
 app.use(express.json());
 
 // api routes
+app.use("/api/auth", require("./routes/authRoutes.cjs"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes.cjs"));
 app.use("/api/instructor", require("./routes/instructorRoutes.cjs"));
 app.use("/api/class", require("./routes/classRoutes.cjs"));
 
