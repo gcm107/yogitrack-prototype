@@ -1,64 +1,48 @@
 # YOGITRACK PROTOTYPE
+MERN based full stack web app for managing yoga studios
 
-Simple yoga studio management app 
+## TODO
+- Fix dashboard statistics to show real data
+- Add user login and authentication
+- Add customer and package search functionality
 
-- Currently working on adding all use cases. Most are finished but still need to commit after testing. 
+## USE CASES
 
-## PART 1: CORE FUNCTIONALITY
+### USE CASE 1: ADD INSTRUCTOR
+Manager can add yoga instructors with name, email, phone, address, and preferred contact. System auto-generates instructor IDs (I001, I002, etc.).
 
-### USE CASE 1: ADD INSTRUCTOR - COMPLETED
+### USE CASE 2: ADD CLASS
+Manager can schedule yoga classes and assign instructors. System auto-generates class IDs (A001, A002, etc.) and checks for schedule conflicts.
 
-**Description:** Manager adds new instructor to the MongoDB collection
+### USE CASE 3: ADD CUSTOMER
+Manager adds customers with contact info. System generates customer IDs starting with Y (Y001, Y002, etc.). Customers start with 0 class balance.
 
-**Requirements Implemented:**
-- Manager can add new instructor and their information (Name, email, phone, address, preferred contact method)
-- Yogitrack checks for duplicate instructor names before adding
-- Yogitrack validates to make sure required fields are filled out before saving
-- Yogitrack generates a unique ID is assigned to the instructor when saved
-- Yogitrack displays a message and the instructor id
-- Yogitrack adds the new Instructor to the dropdown of instructors
+### USE CASE 4: ADD PACKAGE
+Manager creates class packages with pricing. System generates package IDs (P001 for general, S001 for senior). Packages can be for 1, 4, 10, or unlimited classes.
 
-___
-_**Status:**_ Working
+### USE CASE 5: RECORD SALE
+Manager records package sales to customers. System automatically calculates validity dates and updates customer class balance.
 
----
+### USE CASE 6: RECORD ATTENDANCE
+Instructors mark customer attendance for classes. System automatically decrements customer class balance by 1 per class attended.
 
-### USE CASE 2: ADD CLASS - COMPLETED
+### USE CASE 7: GENERATE REPORTS
+Manager generates business reports including package sales, instructor performance, customer packages, and teacher payments.
 
-**Description:** The manager adds a new class to the schedule with the following data:
-- **Actor:** Manager
-- **Description:** The manager adds a new class to the schedule with the following data:
-  - Instructor Id
-  - Day, time
-  - Class type (General or Special)
-    - A General class is open to any customer with a package of 'General' classes
-    - A Special series of classes needs a package with 'Special' class type, e.g. 'Yoga with weights'
-  - Pay rate
+## TECHNICAL IMPLEMENTATION
+
+**Backend:**
+- Node.js with Express server
+- MongoDB database with Mongoose ODM
+- RESTful API endpoints for all operations
+- Automatic ID generation and validation
+
+**Frontend:**
+- React application with modern UI
+- Form validation and error handling
 
 
-**Requirements Implemented:**
-- Manager can create new class with instructor assignment, schedule, and class details
-- Yogitrack checks for schedule conflicts and prevents double-booking of time slots
-- Yogitrack generates unique class IDs with "A" prefix (A001, A002, A003...)
-- Yogitrack validates all required fields before saving
-- Yogitrack confirms successful class creation with message
-
-**Files Created:** (used the provided instructor files as reference for these new files)
-- `public/htmls/class.html` - class form interface
-- `public/js/class.js` - form logic with conflict detection (used the instructor.js as reference)
-- `controllers/classController.cjs` - class management and conflict checking
-- `routes/classRoutes.cjs` - class API endpoints
-- `models/classModel.cjs` - class database schema
-
-___
-_**Status:**_ Working
-
----
-
-## PART 2: USE CASES
-
-- Customer management - implemented (add customer)
-- Package management 
-- Attendance tracking
-- Payment processing
-- Report Generation
+**Database:**
+- Separate collections for customers, packages, sales, attendance, instructors, classes
+- Automatic balance tracking for customer class credits
+- Relationship management between entities
