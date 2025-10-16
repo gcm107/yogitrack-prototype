@@ -33,8 +33,8 @@ Manager generates business reports including package sales, instructor performan
 
 **Backend:**
 - Node.js with Express server
-- MongoDB database with Mongoose ODM
-- RESTful API endpoints for all operations
+- MongoDB database
+- RESTful API endpoints
 - Automatic ID generation and validation
 
 **Frontend:**
